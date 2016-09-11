@@ -1,0 +1,9 @@
+{
+    "invokerPackage": "Axxell",
+    "apiPackage": "Axxell\\Api",
+    "modelPackage": "Axxell\\Model",
+    "composerVendorName": "CINAQ",
+    "composerProjectName": "Axxell",
+    "packagePath": "axxell-client-php",
+    "artifactVersion": "1.0.0"
+}

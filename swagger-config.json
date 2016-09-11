@@ -1,0 +1,8 @@
+{
+    "invokerPackage": "com.cinaq.axxell.api.specs",
+    "groupId": "com.cinaq.axxell.api",
+    "artifactId": "axxell-api",
+    "apiPackage": "com.cinaq.axxell.api.specs",
+    "configPackage": "com.cinaq.axxell.api.specs",
+    "artifactVersion": "1.0.0"
+}

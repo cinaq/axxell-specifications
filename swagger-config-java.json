@@ -1,0 +1,7 @@
+{
+    "invokerPackage": "com.cinaq.axxell.client",
+    "artifactId": "axxell-client",
+    "apiPackage": "com.cinaq.axxell.client.api",
+    "modelPackage": "com.cinaq.axxell.client.model",
+    "artifactVersion": "1.0.0"
+}

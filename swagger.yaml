@@ -1,0 +1,542 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: axxell-api
+host: axxell.cinaq.com
+basePath: /v1/
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+securityDefinitions:
+  ApiKey:
+    name: x-api-key
+    type: apiKey
+    in: header
+    description: Private API Key
+security:
+    - ApiKey: []
+paths:
+  /store:
+    post:
+      parameters:
+        - name: store
+          in: body
+          description: Store
+          required: true
+          schema:
+            $ref: "#/definitions/Store"
+      description: Register new Store
+      operationId: registerStore
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Store"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /auth:
+    post:
+      parameters:
+        - name: store
+          in: body
+          description: Store
+          required: true
+          schema:
+            $ref: "#/definitions/Store"
+      description: Retrieve authentication token using password
+      operationId: authStore
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Store"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /events:
+    post:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - name: event
+          in: body
+          description: Single event to register
+          required: true
+          schema:
+            $ref: "#/definitions/Event"
+      description: Register new event
+      operationId: registerEvent
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Event"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: path
+          description: Store identifier
+          required: true
+      description: Get recent events
+      operationId: retrieveEvents
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Event"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+      description: Delete all events
+      operationId: deleteAllEvents
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Event"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /items:
+    post:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - name: item
+          in: body
+          description: Single item to register
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
+      description: Register new item
+      operationId: registerItem
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+      description: Get recent items
+      operationId: retrieveItems
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+      description: Delete all items
+      operationId: deleteAllItems
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /items/{itemid}:
+    delete:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - name: itemid
+          type: string
+          in: path
+          description: Item identifier
+          required: true
+      description: Delete existing item
+      operationId: deleteItem
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /aggregates/effective/{eventType}:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - $ref: "#/parameters/EventType"
+      description: Return list of aggregated data points correlated with recommendationa and eventType
+      operationId: aggregateEffective
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DataPoint"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /aggregates/events/{eventType}:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - $ref: "#/parameters/EventType"
+      description: Return list of aggregated data points
+      operationId: aggregateEvents
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/DataPoint"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /aggregates/countevents/{eventType}:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - $ref: "#/parameters/EventType"
+        - $ref: "#/parameters/DataPeriod"
+      description: Return list of counts per event
+      operationId: aggregateCountEvents
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/DataPoint"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /aggregates/top/{eventType}:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - $ref: "#/parameters/EventType"
+      description: Returns top products
+      operationId: aggregateTop
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /aggregates/recent/{eventType}:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - $ref: "#/parameters/EventType"
+      description: Returns recent products
+      operationId: aggregateRecent
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /recommendations/similar:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - name: count
+          type: number
+          format: double
+          in: query
+          description: Return exactly this amount of suggestions. Maximum value is 50, default is 5.
+        - name: userid
+          type: string
+          in: query
+          required: true
+          description: User requesting the recommendation
+        - name: itemid
+          type: string
+          in: query
+          required: true
+          description: Similar items bought by others
+      description: Return list of recommended items
+      operationId: recommendSimilar
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /recommendations/interesting:
+    get:
+      security:
+        - ApiKey: []
+      parameters:
+        - name: storeid
+          type: string
+          in: query
+          description: Store identifier
+          required: true
+        - name: count
+          type: number
+          format: double
+          in: query
+          description: Return exactly this amount of suggestions. Maximum value is 50, default is 5.
+        - name: userid
+          type: string
+          in: query
+          required: true
+          description: Interesting items for visitor
+      description: Return list of recommended items
+      operationId: recommendInteresting
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Item"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  Item:
+    description: An item is often equivalent to a product or service in your store
+    type: object
+    properties:
+      creationTime:
+        type: string
+        description: Read-only
+      itemId:
+        type: string
+        description: This must be your product id used by your own store
+      gid:
+        type: string
+        description: Global identifier of this item/product. Read-only
+      title:
+        type: string
+        description: Human readable title of the item/product
+      label:
+        type: string
+        description: Sanitized version of title. Read-only
+      categories:
+        type: array
+        description: Categories this item belongs to. List of keywords describing the item is also acceptable here.
+        items:
+          type: string
+      url:
+        type: string
+        description: Full URL that links to the product. e.g. http://yourshop.com/product/123
+  Event:
+    description: An event registered in the system
+    type: object
+    properties:
+      creationTime:
+        type: string
+        description: Read-only
+      eventType:
+        type: string
+        description: Type of event, consumer cannot set recommend
+        enum:
+          - "view"
+          - "purchase"
+          - "recommend"
+      eventId:
+        type: string
+        description: Read-only
+      eventTime:
+        type: string
+        description: Read-only
+      entityType:
+        type: string
+        description: Read-only
+      entityId:
+        type: string
+        description: The user that triggered this event. You are free to choose whatever you like but it has to be consistent. Good examples are email address, internal user id or sha256 hash of these values.
+      targetEntityType:
+        type: string
+        description: Read-only
+      targetEntityId:
+        type: string
+        description: Way to identify your product. Use the product id from your shop
+      body:
+        type: string
+        description: Meta information that doesn't fit into above fields. Read-only
+  Store:
+    description: A store is equivalent to an user account
+    type: object
+    required:
+      - email
+    properties:
+      email:
+        type: string
+        format: email
+        description: Username/email used to login. Set this during registration.
+      apiKey:
+        type: string
+        description: Also known as secret key. Read-only
+      password:
+        type: string
+        description: The password required to login. Set this during registration.
+      salt:
+        type: string
+        description: Internal use
+      storeId:
+        type: string
+        description: Also known as access key. Read-only
+  DataPoint:
+    description: Used to present numerical data for plots
+    type: object
+    properties:
+      creationTime:
+        type: string
+      label:
+        type: string
+      value:
+        type: number
+        format: double
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+      timestamp:
+        type: string
+      status:
+        type: integer
+      error:
+        type: string
+      exception:
+        type: string
+      path:
+        type: string
+parameters:
+  EventType:
+    name: eventType
+    type: string
+    in: path
+    description: Valid values purchase, view or recommend
+    required: true
+  DataPeriod:
+    name: dataPeriod
+    type: string
+    in: query
+    description: Valid values are last7days, last30days, today, yesterday
+    required: true
+
