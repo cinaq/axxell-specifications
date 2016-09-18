@@ -10,7 +10,7 @@ swagger-codegen:
 api-docs:
 	$(SWAGGER) generate -i swagger.yaml -l html -o html
 
-clients: clean-clients client-php client-java client-python
+clients: clean-clients client-php client-java client-python client-go client-javascript
 
 client-php: swagger-codegen
 	git clone git@github.com:xiwenc/axxell-client-php.git
@@ -29,18 +29,32 @@ client-python: swagger-codegen
 	$(SWAGGER) generate -i swagger.yaml -l python -o axxell-client-python -c swagger-config-python.json
 	echo "$(FOOTER)" >> axxell-client-python/README.md
 
+client-go: swagger-codegen
+	git clone git@github.com:xiwenc/axxell-client-go.git
+	$(SWAGGER) generate -i swagger.yaml -l go -o axxell-client-go -c swagger-config-go.json
+	echo "$(FOOTER)" >> axxell-client-go/README.md
+
+client-javascript: swagger-codegen
+	git clone git@github.com:xiwenc/axxell-client-javascript.git
+	$(SWAGGER) generate -i swagger.yaml -l javascript -o axxell-client-javascript
+	echo "$(FOOTER)" >> axxell-client-javascript/README.md
+
 diff:
 	cd axxell-client-php && git diff
 	cd axxell-client-java && git diff
 	cd axxell-client-python && git diff
+	cd axxell-client-go && git diff
+	cd axxell-client-javascript && git diff
 
 push:
 	cd axxell-client-php && git push origin master
 	cd axxell-client-java && git push origin master
 	cd axxell-client-python && git push origin master
+	cd axxell-client-go && git push origin master
+	cd axxell-client-javascript && git push origin master
 
 clean-clients:
-	rm -rf axxell-client-python axxell-client-java axxell-client-php || true
+	rm -rf axxell-client-python axxell-client-java axxell-client-php axxell-client-go axxell-client-javascript|| true
 
 clean: clean-clients
 	rm -rf swagger-codegen
