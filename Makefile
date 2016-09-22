@@ -1,5 +1,6 @@
 SWAGGER=java -jar swagger-codegen/modules/swagger-codegen-cli/target/swagger-codegen-cli.jar
 FOOTER="Auto generated, see https://github.com/cinaq/axxell-specifications"
+CLIENTS=axxell-client-php axxell-client-java axxell-client-python axxell-client-go axxell-client-javascript
 
 all: clients api-docs
 
@@ -40,29 +41,23 @@ client-javascript: swagger-codegen
 	$(SWAGGER) generate -i swagger.yaml -l javascript -o axxell-client-javascript
 	echo "$(FOOTER)" >> axxell-client-javascript/README.md
 
-diff:
-	cd axxell-client-php && git diff
-	cd axxell-client-java && git diff
-	cd axxell-client-python && git diff
-	cd axxell-client-go && git diff
-	cd axxell-client-javascript && git diff
+diff: $(CLIENTS)
+	for target in $^ ; do \
+		cd $$target && git diff && cd ../ ; \
+	done
 
-commitall:
-	cd axxell-client-php && git commit -avm "Auto generate"
-	cd axxell-client-java && git commit -avm "Auto generate"
-	cd axxell-client-python && git commit -avm "Auto generate"
-	cd axxell-client-go && git commit -avm "Auto generate"
-	cd axxell-client-javascript && git commit -avm "Auto generate"
+commitall: $(CLIENTS)
+	for target in $^ ; do \
+		cd $$target && git commit -avm "Auto generate" && cd ../ ; \
+	done
 
-push:
-	cd axxell-client-php && git push origin master
-	cd axxell-client-java && git push origin master
-	cd axxell-client-python && git push origin master
-	cd axxell-client-go && git push origin master
-	cd axxell-client-javascript && git push origin master
+push: $(CLIENTS)
+	for target in $^ ; do \
+		cd $$target && git push origin master && cd ../ ; \
+	done
 
 clean-clients:
-	rm -rf axxell-client-python axxell-client-java axxell-client-php axxell-client-go axxell-client-javascript|| true
+	rm -rf $(CLIENTS) || true
 
 clean: clean-clients
 	rm -rf swagger-codegen
